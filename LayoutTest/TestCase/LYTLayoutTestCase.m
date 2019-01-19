@@ -151,9 +151,16 @@ NS_ASSUME_NONNULL_BEGIN
         } else {
             // We always want to run these tests, even if the we don't want to continue further
             [self runAccessibilityTestsWithSubview:subview view:view];
-            [self runSubviewWithSuperviewTestsWithSubview:subview view:view];
             [self runAmbiguousLayoutTestsWithSubview:subview view:view];
             
+            // if it's a private (Apple) class assume Apple knows what it's doing with overlapping
+            if ( [[[subview class] description] hasPrefix:@"_"] ) {
+                *stopBranch = YES;
+                NSLog(@"skipped %@ subview", [subview description]);
+                return;
+            }
+            [self runSubviewWithSuperviewTestsWithSubview:subview view:view];
+
             if ([LYTLayoutTestCase class:[subview class] includedInSet:self.viewClassesAllowingSubviewErrors]) {
                 // We shouldn't continue
                 *stopBranch = YES;

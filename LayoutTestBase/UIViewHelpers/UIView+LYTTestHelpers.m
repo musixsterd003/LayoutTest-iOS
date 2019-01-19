@@ -49,6 +49,13 @@ NS_ASSUME_NONNULL_BEGIN
         UIView *subview1 = [self.subviews objectAtIndex:i];
         for (NSInteger j = i + 1; j < subviewsCount; ++j) {
             UIView *subview2 = [self.subviews objectAtIndex:j];
+            
+            if (
+                [[[subview1 class] description] hasPrefix:@"_" ] ||
+                ([[[subview2 class] description] hasPrefix:@"_"]) ) {
+                NSLog(@"Skipping test as %@ or %@ are private classes", [[subview1 class] description], [[subview2 class] description] );
+                continue; // _ means private UIKit classes, I don't care about Apple frameworks overlapping
+            }
             // The check ensures two views intersect
             // Evading false positives due to computation tolerance
             if (subview1.lyt_bottom > subview2.lyt_top + epsilon &&
