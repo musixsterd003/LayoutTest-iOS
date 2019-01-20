@@ -25,6 +25,11 @@ NS_ASSUME_NONNULL_BEGIN
 
     NSString *viewName = [NSString stringWithFormat:@"%@ (superview: %@)", self, self.superview];
 
+    if ( [viewName hasPrefix:@"<UINavigationBar"] ) {
+        NSLog(@"Skipping out of bounds checking for nav bar");
+        return;
+    }
+    
     if (self.lyt_left < -epsilon) {
         errorBlock([NSString stringWithFormat:@"X location is less than zero for %@", viewName], self);
     }
